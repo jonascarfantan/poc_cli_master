@@ -1,0 +1,19 @@
+{
+  "name": "cli_master",
+  "version": "1.0.0",
+  "description": "Poc of MOBA game with a fresh new cli gameplay",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "elm-live src/Main.elm --pushstate --hot --start-page=public/index.html -- --output=public/elm.js --debug",
+    "start": "parcel public/index.html",
+    "build": "parcel build/index.html --dist-dir build"
+  },
+  "author": "jonas carfantan",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-elm": "^2.8.3",
+    "elm": "^0.19.1-5",
+    "parcel": "^2.8.3"
+  }
+}
