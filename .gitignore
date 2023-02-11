@@ -1,5 +1,5 @@
-./dist
+dist
 .parcel-cache
-./elm-stuff
-./node_modules
-./public/elm.js
+elm-stuff
+node_modules
+public/elm.js

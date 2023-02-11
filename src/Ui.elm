@@ -19,6 +19,7 @@ settings_menu_wrap m =
         , height fill
         , block_padding
         , Background.color colors.primary
+         
         
         ]
         [
@@ -164,7 +165,7 @@ board m =
         , Background.color colors.highligth
         ] Board.createBoard
 
--- ______)
+-- ______
 -- RENDER
 render : Model -> Element msg
 render m =

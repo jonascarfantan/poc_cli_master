@@ -1,6 +1,5 @@
 module Style exposing (..)
 import Element exposing (..)
-import Color
 import Canvas.Settings.Text exposing (TextBaseLine(..))
 
 -- Color
@@ -19,6 +18,7 @@ block_padding : Attribute msg
 block_padding = padding 10
 
 bot_padding : Attribute msg
+
 bot_padding 
     = paddingEach 
         { top = 0

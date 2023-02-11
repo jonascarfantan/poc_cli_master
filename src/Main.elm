@@ -1,7 +1,8 @@
 module Main exposing (main)
-import Time exposing (Posix)
 import Browser
-import Browser.Events exposing (onAnimationFrame)
+import Browser.Events exposing (onAnimationFrame, onKeyDown)
+import Time exposing (Posix)
+import Json.Decode as Decode
 import Html exposing (Html)
 import Element exposing (..)
 import Element.Events exposing (onClick)
@@ -9,18 +10,37 @@ import Color exposing (Color)
 -- Internal imports
 import Shared exposing (..)
 import Ui
+import Browser.Events exposing (onKeyPress)
+
+keyDecoder : Decode.Decoder KeyValue
+keyDecoder =
+    Decode.map toKeyValue (Decode.field "key" Decode.string)
+
+toKeyValue : String -> KeyValue
+toKeyValue key =
+    let
+        _ =
+            Debug.log key
+    in
+    case String.uncons key of
+        Just ( char, "" ) ->
+            Character char
+
+        _ ->
+            Control key
 
  -- ______________
  -- ___MESSAGES___
-
 type Msg
     = ToggleRunning
     | Tick Time.Posix
     | AdjustTimeZone Time.Zone
 
+    | AddKey KeyValue
+    | NoOp
+
 --___________________
 --_______UPDATE______
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -34,14 +54,24 @@ update msg model =
 
         ToggleRunning ->
             ( { model | isRunning = not model.isRunning }
-            , Cmd.none  )
+            , Cmd.none )
+        
+        -- Keyboard Actions
+        AddKey value ->
+            ( { model | keys = value :: model.keys }
+            , Cmd.none )
+
+        NoOp -> ( model, Cmd.none )
 
 
 --___________________
 --____SUBSCRIPTION___
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every 1000 Tick
+    Sub.batch <| 
+        [ Time.every 1000 Tick
+        , onKeyDown (Decode.map AddKey keyDecoder)
+        ]
 
 --___________________
 --_______MAIN________
@@ -57,9 +87,6 @@ main =
 
 --___________________
 --_______VIEW________
---___________________
-
-
 view : Model -> Html msg
 view model =
     layout []
