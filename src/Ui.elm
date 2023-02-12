@@ -15,12 +15,11 @@ import Game.Cell as Cell
 settings_menu_wrap : Model -> Element msg
 settings_menu_wrap m =
     column
-        [ width <| fillPortion 2
+        [ width <| px ( if m.isMenuOpen then 240 else 70 )
         , height fill
         , block_padding
         , Background.color colors.primary
          
-        
         ]
         [
             settings_menu m

@@ -2,12 +2,9 @@ module Shared exposing (..)
 import Time
 
 -- USER INPUTS
-type KeyValue 
+type Key 
     = Character Char
     | Control String
-
-type alias Keys =
-    List KeyValue
 
 type alias Flags =
     { height: Int
@@ -29,7 +26,7 @@ type alias Model =
     , zone : Time.Zone
 
     -- Other
-    , keys : Keys
+    , keyPressed : Maybe Key
     }
 
 init : Flags -> ( Model, Cmd msg )
@@ -39,7 +36,7 @@ init flags =
         , time = Time.millisToPosix 0
         , zone = Time.utc
         , isMenuOpen = True
-        , keys = [] 
+        , keyPressed = Nothing 
         } , Cmd.none )
 
 -- Time Helper

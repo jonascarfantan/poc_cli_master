@@ -12,11 +12,11 @@ import Shared exposing (..)
 import Ui
 import Browser.Events exposing (onKeyPress)
 
-keyDecoder : Decode.Decoder KeyValue
+keyDecoder : Decode.Decoder Key
 keyDecoder =
     Decode.map toKeyValue (Decode.field "key" Decode.string)
 
-toKeyValue : String -> KeyValue
+toKeyValue : String -> Key
 toKeyValue key =
     let
         _ =
@@ -25,7 +25,6 @@ toKeyValue key =
     case String.uncons key of
         Just ( char, "" ) ->
             Character char
-
         _ ->
             Control key
 
@@ -36,7 +35,7 @@ type Msg
     | Tick Time.Posix
     | AdjustTimeZone Time.Zone
 
-    | AddKey KeyValue
+    | KeyboardInput Key
     | NoOp
 
 --___________________
@@ -46,7 +45,7 @@ update msg model =
     case msg of
         Tick newTime ->
             ( { model | time = newTime }
-            , Cmd.none )
+            , Cmd.none ) 
 
         AdjustTimeZone newZone ->
             ( { model | zone = newZone }
@@ -57,9 +56,14 @@ update msg model =
             , Cmd.none )
         
         -- Keyboard Actions
-        AddKey value ->
-            ( { model | keys = value :: model.keys }
-            , Cmd.none )
+        KeyboardInput key ->
+            case key of
+                Control "Escape" ->
+                    ( { model | keyPressed = Just key, isMenuOpen = not model.isMenuOpen }
+                    , Cmd.none )
+                _ ->
+                    ( { model | keyPressed = Just key }
+                    , Cmd.none )
 
         NoOp -> ( model, Cmd.none )
 
@@ -70,7 +74,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch <| 
         [ Time.every 1000 Tick
-        , onKeyDown (Decode.map AddKey keyDecoder)
+        , onKeyDown (Decode.map KeyboardInput keyDecoder)
         ]
 
 --___________________
