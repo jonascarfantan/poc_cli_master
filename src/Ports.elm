@@ -1,7 +1,5 @@
-port module Ports exposing (downloadSvg, windowResizes)
+port module Ports exposing (dl_svg, resize_window)
 
+port dl_svg : String -> Cmd msg
 
-port downloadSvg : String -> Cmd msg
-
-
-port windowResizes : ({ width : Int, height : Int } -> msg) -> Sub msg
+port resize_window : ({ width : Int, height : Int } -> msg) -> Sub msg

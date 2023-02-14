@@ -1,6 +1,8 @@
 module Style exposing (..)
 import Element exposing (..)
 import Canvas.Settings.Text exposing (TextBaseLine(..))
+-- Internal
+import Model exposing (Model)
 
 -- Color
 colors = 
@@ -12,6 +14,12 @@ colors =
     , black_cell = rgb255 80 80 80
     , white_cell = rgb255 220 220 220
     }
+
+-- Size
+menu_open_w m =
+    round m.window.width // 6
+menu_closed_w =
+    68
 
 -- Padding
 block_padding : Attribute msg

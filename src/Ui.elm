@@ -1,25 +1,31 @@
 module Ui exposing (..)
 
+import Html.Attributes exposing (style)
 import Element exposing (..)
 import Element.Events exposing (onClick)
 import Element.Background as Background
-import Element.Border as Border
-import Grid
+
 -- Internal import
-import Shared exposing (Model)
+import Helper
+import Model exposing (..)
 import Style exposing (..)
 import Game.Board as Board
-import Game.Cell as Cell
+
+-- Helpers
+css : String -> String -> Attribute msg
+css property value =
+    htmlAttribute <| style property value
+
 -- _____________________
 -- ASIDE / SETTINGS MENU
 settings_menu_wrap : Model -> Element msg
 settings_menu_wrap m =
     column
-        [ width <| px ( if m.isMenuOpen then 240 else 70 )
-        , height fill
+        [ height fill
         , block_padding
         , Background.color colors.primary
-         
+        , css "width" <| String.fromInt ( if m.isMenuOpen then menu_open_w m else menu_closed_w )
+        , css "z-index" "1"
         ]
         [
             settings_menu m
@@ -123,7 +129,7 @@ game_head m =
     el 
         [ alignRight
         , Background.color colors.highligth
-        ] <| text <| Shared.time_str m
+        ] <| text <| Helper.time_str m
 
 game_arena_wrap : Model -> Element msg
 game_arena_wrap m =
@@ -131,12 +137,51 @@ game_arena_wrap m =
         [ width fill
         , height <| fillPortion 10
         ]
-        [
-            game_arena m
+        [ left_pannels_wrap m
+        , board m
+        , right_pannels_wrap m
         ]
 
-game_arena : Model -> Element msg
-game_arena m = board_wrap m
+-- ___________
+-- CHESS BOARD 
+board : Model -> Element msg
+board m =
+    column
+        [ height fill
+        , width <| fillPortion 4
+        , Background.color colors.highligth
+        ] <| Board.createBoard m
+
+left_pannels_wrap : Model -> Element msg
+left_pannels_wrap m =
+    column
+        [ height fill
+        , width <| fillPortion 2
+        , Background.color colors.highligth
+        ] [ left_pannel m ]
+left_pannel : Model -> Element msg
+left_pannel m =
+    column
+        [ height fill
+        , width fill
+        , Background.color colors.mauve
+        ] [ el [] <| text <| "Left pannels" ]
+
+right_pannels_wrap : Model -> Element msg
+right_pannels_wrap m =
+    column
+        [ height fill
+        , width <| fillPortion 2
+        , Background.color colors.highligth
+        ] [ right_pannel m ]
+
+right_pannel : Model -> Element msg
+right_pannel m =
+    column
+        [ height fill
+        , width fill
+        , Background.color colors.mauve
+        ] [ el [] <| text <| "right pannels" ]
 
 -- ____________
 -- FOOTER / ATH
@@ -148,21 +193,9 @@ game_foot_wrap m =
         ]
         [ game_foot m
         ]
+
 game_foot : Model -> Element msg
 game_foot m = el [] <| text <| "ATH"
-
--- ___________
--- CHESS BOARD 
-board_wrap : Model -> Element msg
-board_wrap m = board m
-
-board : Model -> Element msg
-board m =
-    column
-        [ height fill
-        , width fill
-        , Background.color colors.highligth
-        ] Board.createBoard
 
 -- ______
 -- RENDER
